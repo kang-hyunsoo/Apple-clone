@@ -49,8 +49,27 @@
     }
 
     let yOffset = 0; // window.pageYOffset 대신 쓸 변수
-    function scrollLoop() {
+    let prevScrollHeight = 0; // 현재 스크롤 위히보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
+    let currentScene = 0; // 현재 활성화된 섹션 (현재 보고있는 scroll-section)
 
+    function scrollLoop() {
+        // 활성화 시킬 섹션은?
+        prevScrollHeight = 0;
+        for (let i = 0; i < currentScene; i++) {
+            prevScrollHeight += sceneInfo[i].scrollHeight;
+        }
+
+        if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+            currentScene++;
+        }
+
+        if  (yOffset < prevScrollHeight) {
+            // 위로 스크롤 최대한 올리고 튕겼을 경우 사파리 브라우저에서는 스크롤 마이너스가 되기 때문에 방어코드를 넣음
+            if (currentScene === 0) return
+            currentScene--;
+        }
+
+        console.log(currentScene)
     }
 
     window.addEventListener('resize', setLayout)
@@ -61,3 +80,4 @@
     setLayout()
 
 })();
+
