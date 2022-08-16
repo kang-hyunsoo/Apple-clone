@@ -8,7 +8,14 @@
             heightNum: 5, // 브라우저 높이의 5배로 scrollHeight 세팅
             scrollHeight: 0,
             objs: {
-                container: document.querySelector('#scroll-section-0')
+                container: document.querySelector('#scroll-section-0'),
+                messageA: document.querySelector('#scroll-section-0 .main-message.a'),
+                messageB: document.querySelector('#scroll-section-0 .main-message.b'),
+                messageC: document.querySelector('#scroll-section-0 .main-message.c'),
+                messageD: document.querySelector('#scroll-section-0 .main-message.d'),
+            },
+            values: {
+                messageA_opacity: [0, 1],
             }
         } ,
         {
@@ -63,9 +70,38 @@
             }
         }
         document.body.setAttribute('id', `show-scene-${currentScene}`);
-
     }
 
+    function calcValues(values, currentYOffset) {
+    // 각 변화의 시작값과 끝값 => opacity 변화를 나타내는 함수
+    // 현재 스크롤이 얼마나 됐는지 필요
+    // 각 섹션마다 얼마나 스크롤이 됐는지가 필요 => 비율로 나타내서 opacity 중간값을 구해줘야함
+        let rv;
+        // 현재 섹션에서 스크롤된 범위를 비율로 내타램
+        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight
+
+        rv = scrollRatio * (values[1] - values[0]) + values[0]
+        return rv;
+    }
+
+    function playAnimation() {
+        const objs = sceneInfo[0].objs
+        const values = sceneInfo[0].values
+        const currentYOffset = yOffset - prevScrollHeight
+        switch (currentScene) {
+            case 0:
+                let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset)
+                objs.messageA.style.opacity = messageA_opacity_in
+                console.log(messageA_opacity_in)
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
+    }
 
     function scrollLoop() {
         // 활성화 시킬 섹션은?
@@ -85,7 +121,7 @@
         }
 
         document.body.setAttribute('id', `show-scene-${currentScene}`);
-
+        playAnimation()
     }
 
     window.addEventListener('scroll', () => {
