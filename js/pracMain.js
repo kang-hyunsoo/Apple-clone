@@ -52,6 +52,12 @@
     let prevScrollHeight = 0; // 현재 스크롤 위히보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
     let currentScene = 0; // 현재 활성화된 섹션 (현재 보고있는 scroll-section)
 
+    // 씬이 0 -> 1, 1 -> 0 으로 스크롤했을 때 잠시 음수값이 나옴
+    // 스크롤 속도 등에 의해 영향을 받아서 음수값이 잠깐 나올 수 있는데, 이를 방지하기 위해 체크함
+    // 씬을 바꾸는 함수에서 동작하도록 함
+    let enterNewScene = false;
+
+
     function setLayout() {
         // 각 스크롤 섹션의 높이 셋팅
         for (let i = 0; i < sceneInfo.length; i++) {
@@ -88,6 +94,9 @@
         const objs = sceneInfo[0].objs
         const values = sceneInfo[0].values
         const currentYOffset = yOffset - prevScrollHeight
+
+        console.log(currentScene)
+
         switch (currentScene) {
             case 0:
                 let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset)
@@ -111,16 +120,22 @@
         }
 
         if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+            enterNewScene = true
             currentScene++;
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
+
         }
 
         if  (yOffset < prevScrollHeight) {
-            // 위로 스크롤 최대한 올리고 튕겼을 경우 사파리 브라우저에서는 스크롤 마이너스가 되기 때문에 방어코드를 넣음
+            // 위로 스크롤 최대한 올리고 튕겼을 경우(브라우저 바운스 효과 - 모바일) 사파리 브라우저에서는 스크롤 마이너스가 되기 때문에 방어코드를 넣음
             if (currentScene === 0) return
+            enterNewScene = true
             currentScene--;
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
+
         }
 
-        document.body.setAttribute('id', `show-scene-${currentScene}`);
+        if (enterNewScene) return;
         playAnimation()
     }
 
