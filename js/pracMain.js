@@ -15,7 +15,8 @@
                 messageD: document.querySelector('#scroll-section-0 .main-message.d'),
             },
             values: {
-                messageA_opacity: [0, 1],
+                messageA_opacity: [0, 1, { start: 0.1, end: 0.2 }],
+                messageB_opacity: [0, 1, { start: 0.3, end: 0.4 }],
             }
         } ,
         {
@@ -84,9 +85,26 @@
     // 각 섹션마다 얼마나 스크롤이 됐는지가 필요 => 비율로 나타내서 opacity 중간값을 구해줘야함
         let rv;
         // 현재 섹션에서 스크롤된 범위를 비율로 내타램
-        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight
+        const scrollHeight = sceneInfo[currentYOffset].scrollHeight
+        const scrollRatio = currentYOffset / scrollHeight
 
-        rv = scrollRatio * (values[1] - values[0]) + values[0]
+        if (values.length === 3) {
+            // start ~ end 사이에 애내메이션 실행
+            const partScrollStart = values[2].start * scrollHeight;
+            const partScrollEnd = values[2].end * scrollHeight;
+            const partScrollHeight = partScrollEnd - partScrollStart;
+
+            if (currentYOffset >= partScrollStart && currentYOffset <= partScrollEnd) {
+                rv = (currentYOffset - partScrollStart) / partScrollHeight * (values[1] - values[0]) + values[0]
+            } else if (currentYOffset < partScrollStart) {
+                rv = values[0];
+
+            } else if (currentYOffset > partScrollEnd) {
+                rv = values[1];
+            }
+        } else {
+            rv = scrollRatio * (values[1] - values[0]) + values[0]
+        }
         return rv;
     }
 
