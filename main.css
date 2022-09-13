@@ -181,6 +181,7 @@ a{
     left: 0;
     width: 100%;
 }
+
 #show-scene-0 #scroll-section-0 .sticky-elem,
 #show-scene-1 #scroll-section-1 .sticky-elem,
 #show-scene-2 #scroll-section-2 .sticky-elem,
@@ -190,7 +191,15 @@ a{
 
 .sticky-elem-canvas {
     top: 0;
-    background-color: skyblue;
+    height: 100%;
+    /*canvas 너비 높이는 픽스되어있고 css에서 scale조정*/
+    /*높이는 fit되게 하고, 가로는 중앙정렬 시킴*/
+}
+
+.sticky-elem-canvas canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 @media (min-width: 1024px) {
