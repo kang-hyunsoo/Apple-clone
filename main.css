@@ -27,6 +27,7 @@ a{
 
 .global-nav {
     position: absolute;
+    z-index: 10;
     top: 0;
     left: 0;
     width: 100%;
@@ -36,6 +37,7 @@ a{
 
 .local-nav {
     position: absolute;
+    z-index: 11;
     top: 45px;
     left: 0;
     width: 100%;
@@ -176,7 +178,6 @@ a{
 .sticky-elem {
     display: none;
     position: fixed;
-    /*top: 0;*/
     left: 0;
     width: 100%;
 }
@@ -185,6 +186,11 @@ a{
 #show-scene-2 #scroll-section-2 .sticky-elem,
 #show-scene-3 #scroll-section-3 .sticky-elem {
     display: block;
+}
+
+.sticky-elem-canvas {
+    top: 0;
+    background-color: skyblue;
 }
 
 @media (min-width: 1024px) {

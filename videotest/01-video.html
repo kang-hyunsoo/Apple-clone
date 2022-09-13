@@ -29,17 +29,28 @@
 
 	<script>
 		const videoElem = document.querySelector('.sample-video');
+		// let videoDuration;
+
+		videoElem.addEventListener('loadeddata', function() {
+			// videoDuration = videoElem.duration;
+			init();
+		})
+
 		let progress;
 		let currentFrame;
 		function init() {
 			document.body.classList.remove('before-load');
 
 			window.addEventListener('scroll', function () {
+				// 현재 얼만큼이 스크롤되었는지 비율로 나타냄
+				// 스크롤 가동범위는 전체 사이즈 - 페이지 높이
 				progress = pageYOffset / (document.body.offsetHeight - window.innerHeight);
 				console.log(progress);
+				// 모바일 바운스 방지
 				if (progress < 0) progress = 0;
 				if (progress > 1) progress = 1;
 
+				// 현재 재생시간 세팅
 				videoElem.currentTime = videoElem.duration * progress;
 			});
 		}

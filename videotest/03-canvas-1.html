@@ -52,6 +52,7 @@
 				if (progress > 1) progress = 1;
 
 				currentFrame = Math.round((totalImagesCount - 1) * progress);
+				// 현재 프레임, x좌표, y좌표
 				context.drawImage(videoImages[currentFrame], 0, 0);
 			});
 		}
