@@ -63,7 +63,8 @@ a{
 .local-nav-links .product-name {
     /*margin: auto는 빈영역을 auto가 다 사용한다는 뜻이니 가운데 정렬할 때도 왼쪽 오른쪽 마진을 오토로 줄 수 있음*/
     margin-right: auto;
-    font-size: 1.2em;
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
 .local-nav-links a {
@@ -72,10 +73,12 @@ a{
 
 .local-nav-links a:not(.product-name) {
     margin-left: 2em;
+
 }
 
 .scroll-section {
     /*브라우저 높이의 절반만큼 패딩을 준다*/
+    position: relative;
     padding-top: 50vh;
     /*border: 2px solid blue;*/
 }
