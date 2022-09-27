@@ -118,6 +118,8 @@
             values: {
                 rect1X: [ 0, 0, {start: 0, end: 0} ],
                 rect2X: [ 0, 0, {start: 0, end: 0} ],
+                rectStartY: 0,
+
             }
         }
     ];
@@ -317,7 +319,6 @@
                 // 가로 세로 모두 꽉차게 하기 위해 여기서 세팅 (계산 필요)
                 const widthRatio = window.innerWidth / objs.canvas.width
                 const heightRatio = window.innerHeight / objs.canvas.height
-                console.log(widthRatio, heightRatio)
 
                 let canvasScaleRatio
                 if (widthRatio <= heightRatio) {
@@ -332,8 +333,18 @@
                 objs.context.drawImage(objs.images[0], 0, 0)
 
                 // 캔버스 사이즈에 맞춰 가정한 innerWidth, innerHeight
-                const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio
+                const recalculatedInnerWidth = document.body.offsetWidth / canvasScaleRatio
                 const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio
+
+                // 화면 상의 obj의 위치를 가져옴
+                if (!values.rectStartY) {
+                    values.rectStartY = objs.canvas.getBoundingClientRect().top;
+
+                    // 전체 스크롤에서 캔버스가 위치하는 높이를 나눠서 비율로 나타냄
+                    values.rect1X[2].end = values.rectStartY / scrollHeight
+                    values.rect2X[2].end = values.rectStartY / scrollHeight
+                }
+
 
                 // 양 옆의 하얀 박스
                 const whiteRectWidth = recalculatedInnerWidth * 0.15;
@@ -343,9 +354,23 @@
                 values.rect2X[0] = values.rect1X[0] + recalculatedInnerWidth - whiteRectWidth;
                 values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
 
-                objs.context.fillRect(values.rect1X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
-                objs.context.fillRect(values.rect2X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
 
+                // 좌우 흰색 박스 그리기
+                // objs.context.fillRect(values.rect1X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
+                // objs.context.fillRect(values.rect2X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
+
+                objs.context.fillRect(
+                    parseInt(calcValues(values.rect1X, currentYOffset)),
+                    0,
+                    parseInt(whiteRectWidth),
+                    objs.canvas.height
+                );
+                objs.context.fillRect(
+                    parseInt(calcValues(values.rect2X, currentYOffset)),
+                    0,
+                    parseInt(whiteRectWidth),
+                    objs.canvas.height
+                );
                 break;
         }
     }
@@ -388,7 +413,6 @@
     window.addEventListener('load', () =>  {
         setLayout();
         sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0); // 캔버스 초기 드로잉
-
 
     })
     window.addEventListener('resize', setLayout)
