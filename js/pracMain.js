@@ -315,7 +315,6 @@
                 break;
 
             case 3:
-                // console.log('3 play');
                 // 가로 세로 모두 꽉차게 하기 위해 여기서 세팅 (계산 필요)
                 const widthRatio = window.innerWidth / objs.canvas.width
                 const heightRatio = window.innerHeight / objs.canvas.height
@@ -330,6 +329,7 @@
                 }
 
                 objs.canvas.style.transform = `scale(${canvasScaleRatio})`
+                objs.context.fillStyle = 'white'
                 objs.context.drawImage(objs.images[0], 0, 0)
 
                 // 캔버스 사이즈에 맞춰 가정한 innerWidth, innerHeight
@@ -338,9 +338,12 @@
 
                 // 화면 상의 obj의 위치를 가져옴
                 if (!values.rectStartY) {
-                    values.rectStartY = objs.canvas.getBoundingClientRect().top;
-
+                    // values.rectStartY = objs.canvas.getBoundingClientRect().top;
+                    values.rectStartY  = objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
+                    // console.log(values.rectStartY)
                     // 전체 스크롤에서 캔버스가 위치하는 높이를 나눠서 비율로 나타냄
+                    values.rect1X[2].start = (window.innerHeight / 2) / scrollHeight
+                    values.rect2X[2].start = (window.innerHeight / 2) / scrollHeight
                     values.rect1X[2].end = values.rectStartY / scrollHeight
                     values.rect2X[2].end = values.rectStartY / scrollHeight
                 }
