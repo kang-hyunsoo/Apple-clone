@@ -212,7 +212,7 @@ a{
     left: 50%;
 }
 
-.image-blend-canvas .sticky {
+.image-blend-canvas.sticky {
     position: fixed;
     top: 0;
 
