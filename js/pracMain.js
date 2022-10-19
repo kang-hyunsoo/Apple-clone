@@ -156,6 +156,15 @@
     }
     setCanvasImages()
 
+    function checkMenu() {
+        if (yOffset > 44) {
+            // 현재 스크롤된 위치
+            document.body.classList.add('local-nav-sticky');
+        }
+        document.body.classList.remove('sticky');
+
+    }
+
     function setLayout() {
         // 각 스크롤 섹션의 높이 셋팅
         for (let i = 0; i < sceneInfo.length; i++) {
@@ -523,6 +532,7 @@
     window.addEventListener('scroll', () => {
         yOffset = window.pageYOffset
         scrollLoop()
+        checkMenu()
     })
 
     // load => 모든 컨텐츠가 다 로드되면,
