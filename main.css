@@ -248,9 +248,14 @@ a{
     .mid-message {
         /* vw로 창 크기에 따른 비율을 정해줌 */
         font-size: 4vw;
+        width: 1000px;
+        padding: 0;
     }
     .canvas-caption {
         font-size: 2rem;
+        margin-top: -8rem;
+        padding: 0;
+
     }
 
     #scroll-section-2 .b {
