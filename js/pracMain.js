@@ -457,13 +457,22 @@
                     // console.log('캔버스 닿은 후')
 
                     if (scrollRatio > values.blendHeight[2].end) {
-                        console.log('축소시작')
+                        // console.log('축소시작')
                         values.canvas_scale[0] = canvasScaleRatio;
                         values.canvas_scale[1] = document.body.offsetWidth / (1.5 * objs.canvas.width);
                         values.canvas_scale[2].start = values.blendHeight[2].end;
                         values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2;
 
                         objs.canvas.style.transform = `scale(${calcValues(values.canvas_scale, currentYOffset)})`
+                        objs.canvas.style.marginTop = `0px`
+
+                    }
+
+                    if (scrollRatio > values.canvas_scale[2].end
+                        && values.canvas_scale[2].end > 0 ) {
+                        console.log('스크롤 시작')
+                        objs.canvas.classList.remove('sticky')
+                        objs.canvas.style.marginTop = `${scrollHeight * 0.4}px`
                     }
 
             }
