@@ -166,7 +166,7 @@
     }
 
     function setLayout() {
-        // 각 스크롤 섹션의 높이 셋팅
+        // 각 스크롤 섹션의 높이 셋팅1
         for (let i = 0; i < sceneInfo.length; i++) {
             if (sceneInfo[i].type === 'sticky'){
                 sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;

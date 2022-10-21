@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+  <div class="box"></div>
+  <script>
+      const box = document.querySelector('.box');
+      let acc = 0.1;
+      let delayedYOffset = 0;
+      let rafId;
+      let rafState;
+
+
+      window.addEventListener('scroll', () => {
+          if (!rafState) {
+              rafId = requestAnimationFrame(loop);
+              rafState = true;
+          }
+      })
+
+      function loop() {
+          console.log('loop');
+          // 목표지점: pageYOffset
+          // 현재지점: delayedYOffset
+          delayedYOffset = delayedYOffset + (pageYOffset - delayedYOffset) * acc;
+          box.style.width = `${window.pageYOffset}px`;
+
+          // 스크롤 동작을 멈췄을 때는 loop 동작을 멈춰야함
+
+          rafId = requestAnimationFrame(loop);
+
+          if (Math.abs(pageYOffset - delayedYOffset) < 1) {
+              cancelAnimationFrame(rafId);
+              rafState = false;
+          }
+
+      }
+      loop();
+  </script>
+</body>
+</html>
