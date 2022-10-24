@@ -2,6 +2,12 @@
     let yOffset = 0; // window.pageYOffset 대신 쓸 변수
     let prevScrollHeight = 0; // 현재 스크롤 위히보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
     let currentScene = 0; // 현재 활성화된 섹션 (현재 보고있는 scroll-section)
+    let enterNewScene = false;
+    let acc = 0.1; // 가속도
+    let delayedYOffset = 0;
+    let rafId; // requestAnimationFrame id
+    let rafState; // requestAnimationFrame state
+
 
     // 씬이 0 -> 1, 1 -> 0 으로 스크롤했을 때 잠시 음수값이 나옴
     // 스크롤 속도 등에 의해 영향을 받아서 음수값이 잠깐 나올 수 있는데, 이를 방지하기 위해 체크함
@@ -230,11 +236,13 @@
         const scrollHeight = sceneInfo[currentScene].scrollHeight;
         const scrollRatio = currentYOffset / scrollHeight;
 
+
+
         switch (currentScene) {
             case 0:
                 // console.log('0 play');
-                let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
-                objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+                // let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+                // objs.context.drawImage(objs.videoImages[sequence], 0, 0);
                 objs.canvas.style.opacity = calcValues(values.canvas_opacity, currentYOffset);
 
 
@@ -282,8 +290,8 @@
 
             case 2:
                 // console.log('2 play');
-                let sequence2 = Math.round(calcValues(values.imageSequence, currentYOffset));
-                objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
+                // let sequence2 = Math.round(calcValues(values.imageSequence, currentYOffset));
+                // objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
 
                 if (scrollRatio <= 0.5) {
                     objs.canvas.style.opacity = calcValues(values.canvas_opacity_in, currentYOffset)
@@ -481,7 +489,7 @@
 
                     if (scrollRatio > values.canvas_scale[2].end
                         && values.canvas_scale[2].end > 0 ) {
-                        console.log('스크롤 시작')
+                        // console.log('스크롤 시작')
                         objs.canvas.classList.remove('sticky')
                         objs.canvas.style.marginTop = `${scrollHeight * 0.4}px`
 
@@ -503,23 +511,23 @@
 
     function scrollLoop() {
         // 활성화 시킬 섹션은?
-        let enterNewScene = false;
+        enterNewScene = false;
         prevScrollHeight = 0;
         for (let i = 0; i < currentScene; i++) {
             prevScrollHeight += sceneInfo[i].scrollHeight;
         }
 
-        if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
-            enterNewScene = true
+        if (delayedYOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+            enterNewScene = true;
             currentScene++;
             document.body.setAttribute('id', `show-scene-${currentScene}`);
 
         }
 
-        if  (yOffset < prevScrollHeight) {
+        if  (delayedYOffset < prevScrollHeight) {
+            enterNewScene = true;
             // 위로 스크롤 최대한 올리고 튕겼을 경우(브라우저 바운스 효과 - 모바일) 사파리 브라우저에서는 스크롤 마이너스가 되기 때문에 방어코드를 넣음
             if (currentScene === 0) return
-            enterNewScene = true
             currentScene--;
             document.body.setAttribute('id', `show-scene-${currentScene}`);
 
@@ -529,10 +537,44 @@
         playAnimation()
     }
 
+    function loop() {
+        // 목표지점: pageYOffset
+        // 현재지점: delayedYOffset
+        delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+
+        if (!enterNewScene) {
+            const currentYOffset = delayedYOffset - prevScrollHeight;
+            const values = sceneInfo[currentScene].values;
+            const objs = sceneInfo[currentScene].objs;
+
+            if (currentScene === 0 || currentScene === 2) {
+                console.log('loop');
+                let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+                if (objs.videoImages[sequence]) {
+                    objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+                }
+            }
+        }
+
+        // 스크롤 동작을 멈췄을 때는 loop 동작을 멈춰야함
+        rafId = requestAnimationFrame(loop);
+
+        if (Math.abs(yOffset - delayedYOffset) < 1) {
+            cancelAnimationFrame(rafId);
+            rafState = false;
+        }
+    }
+
+
     window.addEventListener('scroll', () => {
         yOffset = window.pageYOffset
         scrollLoop()
         checkMenu()
+
+        if (!rafState) {
+            rafId = requestAnimationFrame(loop);
+            rafState = true;
+        }
     })
 
     // load => 모든 컨텐츠가 다 로드되면,
