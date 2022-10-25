@@ -160,7 +160,6 @@
 
 
     }
-    setCanvasImages()
 
     function checkMenu() {
         if (yOffset > 44) {
@@ -412,6 +411,7 @@
 
                 // 화면 상의 obj의 위치를 가져옴
                 if (!values.rectStartY) {
+                    // 창 사이즈가 바뀔 떄 다시 세팅해 줘야함
                     // values.rectStartY = objs.canvas.getBoundingClientRect().top;
                     values.rectStartY  = objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
                     // console.log(values.rectStartY)
@@ -548,7 +548,6 @@
             const objs = sceneInfo[currentScene].objs;
 
             if (currentScene === 0 || currentScene === 2) {
-                console.log('loop');
                 let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
                 if (objs.videoImages[sequence]) {
                     objs.context.drawImage(objs.videoImages[sequence], 0, 0);
@@ -584,7 +583,16 @@
         sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0); // 캔버스 초기 드로잉
 
     })
-    window.addEventListener('resize', setLayout)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) {
+            setLayout()
+        }
+        sceneInfo[3].values.rectStartY = 0
+    })
+
+    window.addEventListener('orientationchange', setLayout)
+
+    setCanvasImages()
 
 })();
 
