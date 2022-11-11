@@ -25,6 +25,10 @@ a{
 
 }
 
+body .before-load {
+    overflow: hidden;
+}
+
 .global-nav {
     position: absolute;
     z-index: 10;

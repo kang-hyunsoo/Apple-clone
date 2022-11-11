@@ -565,6 +565,15 @@
     }
 
 
+
+    // load => 모든 컨텐츠가 다 로드되면,
+    // DOMContentLoaded => html에서 그리는 dom만 로드되면,
+    window.addEventListener('load', () =>  {
+        document.body.classList.remove('before-load');
+        setLayout();
+        sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0); // 캔버스 초기 드로잉
+
+
     window.addEventListener('scroll', () => {
         yOffset = window.pageYOffset
         scrollLoop()
@@ -576,14 +585,7 @@
         }
     })
 
-    // load => 모든 컨텐츠가 다 로드되면,
-    // DOMContentLoaded => html에서 그리는 dom만 로드되면,
-    window.addEventListener('load', () =>  {
-        document.body.classList.remove('before-load');
-        setLayout();
-        sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0); // 캔버스 초기 드로잉
 
-    })
     window.addEventListener('resize', () => {
         if (window.innerWidth > 900) {
             setLayout()
@@ -594,6 +596,7 @@
     window.addEventListener('orientationchange', setLayout)
     document.querySelector('.loading').addEventListener('transitionend', (e) => {
         document.body.removeChild(e.currentTarget);
+    })
     })
 
     setCanvasImages()
